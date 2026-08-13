@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>joshua degattis-gillest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" />
+<style>
+  :root { --paper:#f2f1ee; --ink:#111010; --mute:#8b8781; --line:#dcd9d4; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; padding:0; background:var(--paper); color:var(--ink);
+    font-family:'JetBrains Mono', ui-monospace, Menlo, monospace; text-transform:lowercase;
+    -webkit-font-smoothing:antialiased; }
+  a { color:var(--ink); text-decoration:none; }
+  a:hover { opacity:.5; }
+  button { border:0; background:none; padding:0; margin:0; font:inherit; color:inherit;
+    text-transform:lowercase; cursor:pointer; transition:opacity .2s; }
+  button:hover { opacity:.45; }
+  ::selection { background:var(--ink); color:var(--paper); }
+
+  /* header */
+  .bar { position:fixed; top:0; left:0; right:0; z-index:40; display:flex; align-items:center;
+    justify-content:space-between; gap:24px; padding:16px 20px; background:var(--paper);
+    border-bottom:1px solid var(--line); }
+  .bar .mark { font-size:12px; letter-spacing:.22em; font-weight:700; }
+  .bar nav { margin-left:auto; display:flex; gap:22px; align-items:center; }
+  .bar nav button { font-size:10.5px; letter-spacing:.18em; }
+  .bar.home { position:absolute; background:none; border:0; justify-content:flex-end; }
+  .bar.home .mark, .bar.home nav button:not(.cart) { display:none; }
+
+  main { padding-top:49px; }
+  .view { display:none; }
+  .view.on { display:block; }
+
+  /* home */
+  #home { display:grid; grid-template-columns:minmax(0,1fr) clamp(280px,30vw,560px);
+    height:100vh; margin-top:-49px; padding:49px 20px 34px; overflow:hidden; }
+  #home .shot { display:flex; flex-direction:column; gap:8px; min-height:0; }
+  #home .shot .frame { position:relative; flex:1; min-height:0; overflow:hidden; background:#e7e5e1; }
+  #home .shot img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  #home .cap { font-size:9.5px; letter-spacing:.14em; color:var(--mute); }
+  #home .side { display:flex; flex-direction:column; justify-content:center; gap:18px;
+    padding-left:28px; min-width:0; }
+  #home h1 { margin:0; font-size:clamp(13px,1.55vw,22px); line-height:1.05; font-weight:700;
+    letter-spacing:.04em; white-space:nowrap; }
+  #home .side nav { display:flex; flex-direction:column; gap:2px; align-items:flex-start; }
+  #home .side nav button { font-size:13px; letter-spacing:.06em; }
+
+  /* sections */
+  section.page { padding:20px; }
+  .head { display:flex; justify-content:space-between; align-items:baseline; padding-bottom:20px; }
+  h2 { margin:0; font-size:10.5px; font-weight:700; letter-spacing:.22em; }
+  .count { font-size:10px; letter-spacing:.1em; color:var(--mute); }
+
+  /* portfolio */
+  #grid { column-count:3; column-gap:20px; }
+  @media (max-width:900px) { #grid { column-count:2; } }
+  @media (max-width:560px) { #grid { column-count:1; } #home { grid-template-columns:1fr; } }
+  figure { margin:0 0 20px; display:flex; flex-direction:column; gap:8px; break-inside:avoid; }
+  figure .frame { position:relative; width:100%; overflow:hidden; background:#e7e5e1; }
+  figure img { display:block; width:100%; height:100%; object-fit:cover; }
+  figcaption { display:flex; justify-content:space-between; gap:12px; font-size:10px; letter-spacing:.16em; }
+  figcaption .yr { color:var(--mute); }
+
+  /* about */
+  #about .cols { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:40px; align-items:start; }
+  #about .portrait { position:relative; width:100%; aspect-ratio:3/2; overflow:hidden; background:#e7e5e1; }
+  #about .portrait img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  #about .copy { display:flex; flex-direction:column; gap:20px; max-width:560px; }
+  p { margin:0; font-size:15px; line-height:1.6; text-wrap:pretty; }
+  .meta { display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--line);
+    padding-top:16px; font-size:10px; letter-spacing:.16em; }
+
+  /* centered pages */
+  .center { min-height:calc(100vh - 130px); display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:28px; padding:20px; text-align:center; }
+  .center .links { display:flex; flex-direction:column; align-items:center; gap:8px;
+    font-size:10.5px; letter-spacing:.16em; }
+
+  footer { display:flex; justify-content:space-between; gap:20px; padding:16px 20px;
+    border-top:1px solid var(--line); font-size:10px; letter-spacing:.16em; color:var(--mute); }
+  footer.hide { display:none; }
+</style>
+</head>
+<body>
+
+<header class="bar" id="bar">
+  <button class="mark" data-go="home">joshua degattis-gillest</button>
+  <nav>
+    <button data-go="about">about</button>
+    <button data-go="portfolio">portfolio</button>
+    <button data-go="shop">shop</button>
+    <button data-go="contact">contact</button>
+  </nav>
+</header>
+
+<main>
+  <!-- HOME -->
+  <section class="view" id="home">
+    <div class="shot">
+      <div class="frame"><img src="images/hero.jpeg" alt="" /></div>
+      <span class="cap">ginza, 06:40 — 2026</span>
+    </div>
+    <div class="side">
+      <h1>joshua degattis-gillest</h1>
+      <nav>
+        <button data-go="about">about</button>
+        <button data-go="portfolio">portfolio</button>
+        <button data-go="shop">shop</button>
+        <button data-go="contact">contact</button>
+      </nav>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section class="view page" id="portfolio">
+    <div class="head"><h2>portfolio</h2><span class="count" id="count"></span></div>
+    <div id="grid"></div>
+  </section>
+
+  <!-- SHOP -->
+  <section class="view" id="shop">
+    <div class="center"><h2>coming soon</h2></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="view page" id="about">
+    <div class="cols">
+      <div class="portrait"><img src="images/portrait.jpeg" alt="joshua degattis-gillest" /></div>
+      <div class="copy">
+        <h2>about</h2>
+        <p>i'm joshua, a photographer and filmmaker based in brooklyn.</p>
+        <p>my work is centered around the people, places, and small moments that make somewhere feel distinct — from the streets of new york to wherever i happen to be traveling.</p>
+        <p>i shoot photography and short films across travel, culture, landscapes, and everyday life, with an emphasis on finding something interesting in the ordinary.</p>
+        <p>this site is an ongoing collection of what i see along the way.</p>
+        <div class="meta">
+          <span>brooklyn, new york</span>
+          <a href="https://instagram.com/jjjjawshua" style="color:var(--mute)">@jjjjawshua</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="view" id="contact">
+    <div class="center">
+      <h2>contact</h2>
+      <p style="max-width:36ch">for commissions, prints and press. brooklyn, new york.</p>
+      <div class="links">
+        <a href="mailto:jcgillest28@gmail.com">jcgillest28@gmail.com</a>
+        <a href="https://instagram.com/jjjjawshua" style="color:var(--mute)">instagram — @jjjjawshua</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="foot">
+  <span>© joshua degattis-gillest 2026</span>
+  <span>brooklyn, new york</span>
+</footer>
+
+<script>
+/* ---- EDIT YOUR PORTFOLIO HERE ----------------------------------------
+   Drop files in site/images/ and add a line below.
+   ratio is width/height of the crop shown in the grid.               */
+const WORKS = [
+  { src: 'images/hero.jpeg', title: 'ginza, 06:40',          year: '2026', ratio: '3/2' },
+  { src: 'images/w07.jpeg',  title: 'asahi, chuo-ku',        year: '2026', ratio: '3/2' },
+  { src: 'images/w08.jpeg',  title: 'wet road, hakone',      year: '2026', ratio: '3/2' },
+  { src: 'images/w10.jpeg',  title: 'osaka, midday',         year: '2025', ratio: '3/4' },
+  { src: 'images/w09.jpeg',  title: 'two anglers',           year: '2026', ratio: '3/2' },
+  { src: 'images/w01.jpeg',  title: 'first light, mauna kea',year: '2025', ratio: '3/4' },
+  { src: 'images/w02.jpeg',  title: 'green church',          year: '2025', ratio: '3/2' },
+  { src: 'images/w03.jpeg',  title: 'lava coast',            year: '2025', ratio: '3/2' },
+  { src: 'images/w04.jpeg',  title: 'water hyacinth',        year: '2024', ratio: '3/2' },
+  { src: 'images/w05.jpeg',  title: 'stop, saddle road',     year: '2024', ratio: '3/2' },
+  { src: 'images/w06.jpeg',  title: 'trade winds',           year: '2024', ratio: '3/2' }
+];
+/* --------------------------------------------------------------------- */
+
+const grid = document.getElementById('grid');
+grid.innerHTML = WORKS.map(w => `
+  <figure>
+    <div class="frame" style="aspect-ratio:${w.ratio}"><img src="${w.src}" alt="${w.title}" loading="lazy" /></div>
+    <figcaption><span>${w.title}</span><span class="yr">${w.year}</span></figcaption>
+  </figure>`).join('');
+document.getElementById('count').textContent = WORKS.length + ' works';
+
+const VIEWS = ['home','portfolio','shop','about','contact'];
+function show(view) {
+  if (!VIEWS.includes(view)) view = 'home';
+  VIEWS.forEach(v => document.getElementById(v).classList.toggle('on', v === view));
+  document.getElementById('bar').classList.toggle('home', view === 'home');
+  document.getElementById('foot').classList.toggle('hide', view === 'home');
+  if (location.hash.slice(1) !== view) location.hash = view;
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => show(b.dataset.go)));
+window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+show(location.hash.slice(1) || 'home');
+</script>
+</body>
+</html>
