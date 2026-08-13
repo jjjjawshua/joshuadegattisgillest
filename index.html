@@ -197,7 +197,8 @@ function show(view) {
   VIEWS.forEach(v => document.getElementById(v).classList.toggle('on', v === view));
   document.getElementById('bar').classList.toggle('home', view === 'home');
   document.getElementById('foot').classList.toggle('hide', view === 'home');
-  if (location.hash.slice(1) !== view) location.hash = view;
+  const target = view === 'home' ? location.pathname + location.search : location.pathname + location.search + '#' + view;
+  if (target !== location.pathname + location.search + location.hash) history.pushState(null, '', target);
   window.scrollTo(0, 0);
 }
 document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => show(b.dataset.go)));
