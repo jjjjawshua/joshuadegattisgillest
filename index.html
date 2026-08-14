@@ -32,6 +32,15 @@
   .bar nav button { font-size:10.5px; letter-spacing:.18em; }
   .bar.home { position:absolute; background:none; border:0; justify-content:flex-end; }
   .bar.home .mark, .bar.home nav button:not(.cart) { display:none; }
+  .bar .menu-toggle { display:none; }
+  @media (max-width:640px) {
+    .bar nav { display:none; position:absolute; top:100%; left:0; right:0; flex-direction:column;
+      align-items:flex-start; gap:0; background:var(--paper); border-bottom:1px solid var(--line); padding:4px 20px 16px; }
+    .bar nav.open { display:flex; }
+    .bar nav button { padding:10px 0; font-size:12px; }
+    .bar .menu-toggle { display:block; font-size:10.5px; letter-spacing:.18em; }
+    .bar.home .menu-toggle { display:none; }
+  }
 
   main { padding-top:49px; }
   .view { display:none; }
@@ -60,7 +69,7 @@
   /* portfolio */
   #grid { column-count:3; column-gap:20px; }
   @media (max-width:900px) { #grid { column-count:2; } }
-  @media (max-width:560px) { #grid { column-count:1; } #home { grid-template-columns:1fr; } }
+  @media (max-width:560px) { #grid { column-count:1; } #home.on { grid-template-columns:1fr; } }
   figure { margin:0 0 20px; display:flex; flex-direction:column; gap:8px; break-inside:avoid; }
   figure .frame { position:relative; width:100%; overflow:hidden; background:#e7e5e1; }
   figure img { display:block; width:100%; height:100%; object-fit:cover; }
@@ -97,6 +106,7 @@
     <button data-go="shop">shop</button>
     <button data-go="contact">contact</button>
   </nav>
+  <button class="menu-toggle" id="menuToggle" aria-label="toggle menu">menu</button>
 </header>
 
 <main>
@@ -192,17 +202,28 @@ grid.innerHTML = WORKS.map(w => `
 document.getElementById('count').textContent = WORKS.length + ' works';
 
 const VIEWS = ['home','portfolio','shop','about','contact'];
+const barNav = document.querySelector('.bar nav');
+const menuToggle = document.getElementById('menuToggle');
+function closeMenu() {
+  barNav.classList.remove('open');
+  menuToggle.textContent = 'menu';
+}
 function show(view) {
   if (!VIEWS.includes(view)) view = 'home';
   VIEWS.forEach(v => document.getElementById(v).classList.toggle('on', v === view));
   document.getElementById('bar').classList.toggle('home', view === 'home');
   document.getElementById('foot').classList.toggle('hide', view === 'home');
+  closeMenu();
   const target = view === 'home' ? location.pathname + location.search : location.pathname + location.search + '#' + view;
   if (target !== location.pathname + location.search + location.hash) history.pushState(null, '', target);
   window.scrollTo(0, 0);
 }
 document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => show(b.dataset.go)));
 window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+menuToggle.addEventListener('click', () => {
+  barNav.classList.toggle('open');
+  menuToggle.textContent = barNav.classList.contains('open') ? 'close' : 'menu';
+});
 show(location.hash.slice(1) || 'home');
 </script>
 </body>
